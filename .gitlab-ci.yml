@@ -1,0 +1,19 @@
+variables:
+  IMAGE_NAME: hivongseth2/tl-lecturer-service
+
+stages:
+  - docker
+
+docker-build:
+  services:
+    - docker:dind
+  stage: docker
+  tags:
+    - docker
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "master"
+  script:
+    - docker login -u $USERNAME -p $TOKEN
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+
